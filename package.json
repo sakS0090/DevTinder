@@ -1,0 +1,20 @@
+{
+  "name": "devtinder",
+  "version": "1.0.0",
+  "description": "Tinder like application. But for devs.",
+  "keywords": [
+    "Express",
+    "Node.js",
+    "JS"
+  ],
+  "license": "ISC",
+  "author": "Sakshi Singh",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev":"nodemon src/app.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
