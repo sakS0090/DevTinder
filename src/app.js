@@ -1,33 +1,44 @@
-console.log("App started");
 //entry point of our program
 const express=require('express');
 const {adminAuth, userAuth}=require('./Middlewares/auth')
-
+const {makeConnection}=require('./config/database');
+const {User}=require('./models/user');
 //created a server
 const app= express();
 
+app.post('/signup',async(req,res)=>{
+    //creating an instance of our User model named as entry and passing an object in the same
+    const myObj={
+        firstName:'Sakshi',
+        lastName:'Singh',
+        emailId:'sakshi.singh@google.com',
+        password:'sakshi@123'
+    };
+    
+    const entry=new User(myObj);
+try{
+   await entry.save();
+   res.send('User added successfully');
+}
 
-app.use('/admin',adminAuth);
-app.use('/users',userAuth);
-
-
-app.use('/admin/getContent',(req,res)=>{
- res.send("Content fetched");
+catch(err){
+    res.status(400).send("User cannot be added",err);
+}
 });
 
-app.get('/users/getContent',(req,res)=>{
-    console.log(req.params);
-    res.send("Processed successfully!!");
-})
 
-app.post('/test',(req,res)=>{
-    res.send("Data stored in DB successfully !!");
-})
+
+
+makeConnection().then(()=>{
+console.log("Connected successfully to the database! ");
 
 //this helps listening to the incoming request
 app.listen(3003,()=>{
-    console.log("Server listening on port 3003 !");
-});
+    console.log("Server listening on port 3003!");
+})
+}).catch((err)=>{
+    console.log("Cannot connect to the db",err);
+})
 
 
 
@@ -179,11 +190,5 @@ app.listen(3003,()=>{
 
 
 
-//app.use('/hello',(req,res)=>{
-//     res.send("this is for hello route");
-// });
 
-// //use() method is a request handler, we can create as many request handlers we want for different routes
-// app.use('/',(req,res)=>{
-//     res.send("this is a general request handler");
-// });
+
