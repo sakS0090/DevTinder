@@ -1,6 +1,8 @@
+//importing mongoose object and schema is its property
 const {Schema, mongoose}=require('mongoose');
 
 
+//creating a new schema
 const userSchema=new Schema(
     {
         firstName:{
@@ -24,6 +26,7 @@ const userSchema=new Schema(
     }
 );
 
+//creating a model for the userSchema named as User
 const User=mongoose.model('User',userSchema);
 
 module.exports={

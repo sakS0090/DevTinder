@@ -6,27 +6,30 @@ const {User}=require('./models/user');
 //created a server
 const app= express();
 
+app.use(express.json());
 app.post('/signup',async(req,res)=>{
-    //creating an instance of our User model named as entry and passing an object in the same
-    const myObj={
-        firstName:'Sakshi',
-        lastName:'Singh',
-        emailId:'sakshi.singh@google.com',
-        password:'sakshi@123'
-    };
+    const entry=new User(req.body);
     
-    const entry=new User(myObj);
-try{
-   await entry.save();
-   res.send('User added successfully');
-}
+    
+    //creating an instance of our User model named as entry and passing an object in the same
+    // const myObj={
+    //     firstName:'Suraj',
+    //     lastName:'Bisht',
+    //     emailId:'Suar.Bisht@google.com',
+    //     password:'sakshi@123'
+    // };
+    
+    // const entry=new User(myObj);
+     try{
+         await entry.save();
+        res.send('User added successfully');
+     }
 
-catch(err){
-    res.status(400).send("User cannot be added",err);
-}
+     catch(err){
+         res.status(400).send("User cannot be added",err);
+     }
+
 });
-
-
 
 
 makeConnection().then(()=>{
