@@ -10,29 +10,18 @@ app.use(express.json());
 
 
 app.post('/signup',async(req,res)=>{
-    const entry=new User(req.body);
     
-    
-    //creating an instance of our User model named as entry and passing an object in the same
-    // const myObj={
-    //     firstName:'Suraj',
-    //     lastName:'Bisht',
-    //     emailId:'Suar.Bisht@google.com',
-    //     password:'sakshi@123'
-    // };
-    
-    // const entry=new User(myObj);
      try{
-         await entry.save();
+        const entry=new User(req.body);
+        await entry.save();
         res.send('User added successfully');
      }
 
      catch(err){
-         res.status(400).send("User cannot be added",err);
+         res.send(err);
      }
 
 });
-
 
 //a simple GET API to get the user data based on their email from the db
 app.get('/getUser',async(req,res)=>{
@@ -63,6 +52,46 @@ app.get('/getFeed', async (req,res)=>{
     }
 })
 
+app.get('/getUserbyId',async(req,res)=>{
+    try{    
+    
+    const ID=req.query._id;
+    //console.log(ID);
+    const val=await User.findById({_id:ID});
+
+    if(val)
+    {
+        res.send(val);
+    }
+    else
+        res.send("Does not exist");
+}
+
+catch(err)
+{
+    res.status(400).send("Something went Wrong");
+}
+});
+
+
+app.patch('/updateUser',async (req,res)=>{
+    try{
+    const val=req.body;
+    const ID=req.body._id;
+
+    await User.findByIdAndUpdate(ID,val,{
+        runValidators:true
+    });
+
+    res.send("User added successfully!!");
+    }
+    catch(err)
+    {
+        console.log(err);
+         res.status(400).send("Something went Wrong",err.message);
+    }
+
+});
 
 
 makeConnection().then(()=>{
