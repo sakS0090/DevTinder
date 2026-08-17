@@ -74,16 +74,27 @@ catch(err)
 });
 
 
-app.patch('/updateUser',async (req,res)=>{
+app.patch('/updateUser/:_id',async (req,res)=>{
     try{
+        
+    const ID=req.params._id;
     const val=req.body;
-    const ID=req.body._id;
 
+    const allowed=['skills','photo','lastName','gender'];
+    
+    const updates=Object.keys(val); //it returns an array of string
+
+    const isAllowed=updates.every((key)=> allowed.includes(key));
+
+    if(!isAllowed){
+     throw new Error("Invalid Operation : Update not allowed");
+    }
+    
     await User.findByIdAndUpdate(ID,val,{
         runValidators:true
     });
 
-    res.send("User added successfully!!");
+    res.send("User updated successfully!!");
     }
     catch(err)
     {

@@ -43,7 +43,10 @@ const userSchema=new Schema({
         photo:{
             type:String,
             default:"https://www.magnific.com/free-photos-vectors/avatar-svg"
-        }
+        },
+        
+        skills:[String]
+        
     },{ timestamps:true});
 
 //creating a model for the userSchema named as User
