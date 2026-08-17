@@ -45,7 +45,12 @@ const userSchema=new Schema({
             default:"https://www.magnific.com/free-photos-vectors/avatar-svg"
         },
         
-        skills:[String]
+        skills:{
+            
+            type:[String],
+            maxLength:5
+        }
+
         
     },{ timestamps:true});
 

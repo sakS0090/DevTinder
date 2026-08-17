@@ -3,6 +3,7 @@ const express=require('express');
 const {adminAuth, userAuth}=require('./Middlewares/auth')
 const {makeConnection}=require('./config/database');
 const {User}=require('./models/user');
+const validator=require('validator');
 //created a server
 const app= express();
 
@@ -13,6 +14,10 @@ app.post('/signup',async(req,res)=>{
     
      try{
         const entry=new User(req.body);
+        if(!validator.isEmail(req.body.emailId))
+        {
+            res.send("Incorrect email id");
+        }
         await entry.save();
         res.send('User added successfully');
      }
@@ -88,6 +93,11 @@ app.patch('/updateUser/:_id',async (req,res)=>{
 
     if(!isAllowed){
      throw new Error("Invalid Operation : Update not allowed");
+    }
+
+    if(val.skills.length>5)
+    {
+       throw new Error("Invalid Operation : Skills cannot be greater than 5"); 
     }
     
     await User.findByIdAndUpdate(ID,val,{
