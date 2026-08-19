@@ -42,6 +42,36 @@ app.post('/signup',async(req,res)=>{
 
 });
 
+app.post('/login',async (req,res)=>{
+
+try{
+    console.log(req.body);
+ const{ emailId, password} = req.body;
+
+ if(!validator.isEmail(emailId))
+    throw new Error("Invalid Email");
+
+const data=await User.findOne({emailId:emailId});
+
+if(data==null)
+    throw new Error("Invalid credentials");
+
+const isValidId=await bcrypt.compare(password,data.password);  
+
+console.log("isValidId",isValidId);
+
+if(!isValidId)
+    throw new Error("Unsucessful login! User doesn't exist");
+
+res.send("Login Successfull");
+}
+catch(err)
+{
+    res.status(400).send(err.message);
+}
+});
+
+
 //a simple GET API to get the user data based on their email from the db
 app.get('/getUser',async(req,res)=>{
     try{
