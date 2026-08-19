@@ -7,7 +7,8 @@ const userSchema=new Schema({
         firstName:{
             type:String,
             required:true,
-            maxLength:30
+            maxLength:30,
+            minLength:3
         },
         lastName:{
             type: String,
@@ -28,10 +29,12 @@ const userSchema=new Schema({
         },
         age:{
             type:Number,
-            min:18
+            min:18,
+            required:true
         },
         gender:{
             type:String,
+            required:true,
             validate(value)    //this is a custom validation function 
             {
                 if(value!="M" && value!="F" && value!="Others")

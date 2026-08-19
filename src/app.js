@@ -4,6 +4,8 @@ const {adminAuth, userAuth}=require('./Middlewares/auth')
 const {makeConnection}=require('./config/database');
 const {User}=require('./models/user');
 const validator=require('validator');
+const Validation=require('./utils/validate');
+const bcrypt=require('bcrypt');
 //created a server
 const app= express();
 
@@ -13,17 +15,29 @@ app.use(express.json());
 app.post('/signup',async(req,res)=>{
     
      try{
-        const entry=new User(req.body);
-        if(!validator.isEmail(req.body.emailId))
-        {
-            res.send("Incorrect email id");
-        }
+        
+        console.log(req.body);
+        Validation.userValidation(req)
+
+        const entry=new User({
+            firstName:req.body.firstName,
+            lastName:req.body.lastName,
+            emailId:req.body.emailId,
+            password:req.body.password,
+            age:req.body.age,
+            gender:req.body.gender
+        });
+          
+        //hash the user password
+        entry.password= await bcrypt.hash(req.body.password,10);
+
         await entry.save();
+
         res.send('User added successfully');
      }
 
      catch(err){
-         res.send(err);
+         res.status(400).send("ERR MSG : "+ err);
      }
 
 });
@@ -109,7 +123,7 @@ app.patch('/updateUser/:_id',async (req,res)=>{
     catch(err)
     {
         console.log(err);
-         res.status(400).send("Something went Wrong",err.message);
+         res.status(400).send(err.message);
     }
 
 });
