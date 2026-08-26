@@ -6,10 +6,14 @@ const {User}=require('./models/user');
 const validator=require('validator');
 const Validation=require('./utils/validate');
 const bcrypt=require('bcrypt');
+const cookieParser=require('cookie-parser');
+
+
 //created a server
 const app= express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 
 app.post('/signup',async(req,res)=>{
@@ -45,7 +49,7 @@ app.post('/signup',async(req,res)=>{
 app.post('/login',async (req,res)=>{
 
 try{
-    console.log(req.body);
+    
  const{ emailId, password} = req.body;
 
  if(!validator.isEmail(emailId))
@@ -58,12 +62,16 @@ if(data==null)
 
 const isValidId=await bcrypt.compare(password,data.password);  
 
-console.log("isValidId",isValidId);
 
-if(!isValidId)
-    throw new Error("Unsucessful login! User doesn't exist");
+if(isValidId){
+//sending cookie for a valid login case
+    res.cookie("user123","Xkswkmdkwkqkjd");
+    res.send("Login Successfull");
+}
+    else{
+throw new Error("Unsucessful login! User doesn't exist");
+}
 
-res.send("Login Successfull");
 }
 catch(err)
 {
@@ -75,8 +83,6 @@ catch(err)
 //a simple GET API to get the user data based on their email from the db
 app.get('/getUser',async(req,res)=>{
     try{
-
-    console.log(req.body);
         
     const email=req.query.emailId;
     const data=await User.find({emailId:email});
@@ -121,6 +127,16 @@ catch(err)
     res.status(400).send("Something went Wrong");
 }
 });
+
+
+app.get('/profile',async(req,res)=>{
+
+const cookies=req.cookies;
+console.log(cookies);
+
+res.send("Cookie accepted!");
+
+})
 
 
 app.patch('/updateUser/:_id',async (req,res)=>{
