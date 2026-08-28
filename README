@@ -1,3 +1,9 @@
 -----currently reading about authentication-------
+Cookie syntax:
 
-So, read about JWT token
+res.cookie(name, value, [options]);
+Datatype of each parameter:
+1. name(String)
+Cookie name must always be a string
+
+2. value(string,object,buffer)

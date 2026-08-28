@@ -9,6 +9,7 @@ const bcrypt=require('bcrypt');
 const cookieParser=require('cookie-parser');
 
 
+require('dotenv').config();
 //created a server
 const app= express();
 
@@ -179,7 +180,7 @@ makeConnection().then(()=>{
 console.log("Connected successfully to the database! ");
 
 //this helps listening to the incoming request
-app.listen(3003,()=>{
+app.listen(process.env.PORT,()=>{
     console.log("Server listening on port 3003!");
 })
 }).catch((err)=>{
