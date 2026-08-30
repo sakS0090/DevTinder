@@ -7,6 +7,7 @@ const validator=require('validator');
 const Validation=require('./utils/validate');
 const bcrypt=require('bcrypt');
 const cookieParser=require('cookie-parser');
+const jwt=require('jsonwebtoken');
 
 
 require('dotenv').config();
@@ -65,12 +66,23 @@ const isValidId=await bcrypt.compare(password,data.password);
 
 
 if(isValidId){
-//sending cookie for a valid login case
-    res.cookie("user123","Xkswkmdkwkqkjd");
-    res.send("Login Successfull");
+   //creating payload for the token
+     const payload={
+        'ID':'data._id',
+        'EmailID':'data.emailId'
+    };
+
+    //creating token that is to be sent
+    const token=jwt.sign(payload,process.env.secret_key);
+    
+    console.log(typeof(token));
+
+    //sending the token in the cookie back to the browser
+    res.cookie("TOKEN", token);
+    res.send("Cookie sent and login Successful");
 }
     else{
-throw new Error("Unsucessful login! User doesn't exist");
+    throw new Error("Unsucessful login! User doesn't exist");
 }
 
 }
@@ -132,10 +144,11 @@ catch(err)
 
 app.get('/profile',async(req,res)=>{
 
-const cookies=req.cookies;
-console.log(cookies);
+const {TOKEN} = req.cookies;
 
-res.send("Cookie accepted!");
+const decoded= jwt.verify(TOKEN,process.env.secret_key);
+
+res.send(User.findOne(decoded.ID));
 
 })
 
